@@ -4,7 +4,7 @@
   "description": "JS Modules dynamic importer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint ./index.js --fix"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,16 @@
   "bugs": {
     "url": "https://github.com/WezomAgency/module-dynamic-import/issues"
   },
-  "homepage": "https://github.com/WezomAgency/module-dynamic-import#readme"
+  "homepage": "https://github.com/WezomAgency/module-dynamic-import#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.3.0",
+    "eslint-config-standard": "^12.0.0-alpha.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
+  }
 }
