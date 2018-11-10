@@ -1,0 +1,31 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "standard",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "globals": {
+    "WEZOM_DATA": true,
+    "IS_DEVELOPMENT": true,
+    "IS_PRODUCTION": true,
+    "$": true,
+    "GSAP": true,
+    "GreenSockGlobals": true
+  },
+  "rules": {
+    "no-tabs": "off",
+    "import/no-unresolved": "off",
+    "indent": [
+      "error",
+      "tab",
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "semi": [
+      "error",
+      "always"
+    ]
+  }
+}
