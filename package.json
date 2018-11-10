@@ -1,0 +1,20 @@
+{
+  "name": "module-dynamic-import",
+  "version": "0.0.1",
+  "description": "JS Modules dynamic importer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WezomAgency/module-dynamic-import.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WezomAgency/module-dynamic-import/issues"
+  },
+  "homepage": "https://github.com/WezomAgency/module-dynamic-import#readme"
+}
