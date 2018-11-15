@@ -1,6 +1,6 @@
 {
   "name": "module-dynamic-import",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "JS Modules dynamic importer",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,9 @@
     "url": "https://github.com/WezomAgency/module-dynamic-import/issues"
   },
   "homepage": "https://github.com/WezomAgency/module-dynamic-import#readme",
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
     "babel-core": "^6.26.3",
