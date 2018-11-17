@@ -22,7 +22,7 @@ class ModuleDynamicImport {
 		/** @private */
 		this._PromiseFn = settings.PromiseFn || null;
 		if (this._PromiseFn === null) {
-			throw new Error('ModuleDynamicImport Erorr! You must specify "Promise" property!')
+			throw new Error('ModuleDynamicImport Error! You must specify "Promise" property!')
 		}
 
 		/**
@@ -59,16 +59,17 @@ class ModuleDynamicImport {
 
 	/**
 	 * @param {string} moduleName
-	 * @param {jQuery} [$inContainer=$(document)]
+	 * @param {jQuery} [$container=$(document)]
 	 * @return {Promise}
 	 */
-	importModule (moduleName, $inContainer = $(document)) {
+	importModule (moduleName, $container = $(document)) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
+			console.log(9999);
 			this._log('warn', `module "${moduleName}" is not declared`);
 			return Promise.reject();
 		}
 
-		const $elements = this._getElements($inContainer);
+		const $elements = this._getElements($container);
 		if (!$elements.length) {
 			return Promise.resolve();
 		}
@@ -77,12 +78,12 @@ class ModuleDynamicImport {
 	}
 
 	/**
-	 * @param {jQuery} [$inContainer=$(document)]
-	 * @param {boolean} [awaitAll]
+	 * @param {jQuery} [$container=$(document)]
+	 * @param {boolean} [awaitAll=true]
 	 * @return {Promise}
 	 */
-	importAll ($inContainer = $(document), awaitAll) {
-		const $elements = this._getElements($inContainer);
+	importAll ($container = $(document), awaitAll = true) {
+		const $elements = this._getElements($container);
 		if (!$elements.length) {
 			return Promise.resolve();
 		}
@@ -157,12 +158,12 @@ class ModuleDynamicImport {
 	}
 
 	/**
-	 * @param {jQuery} $inContainer
-	 * @return {jQuery} $inContainer
+	 * @param {jQuery} $container
+	 * @return {jQuery} $container
 	 * @private
 	 */
-	_getElements ($inContainer) {
-		const $elements = $inContainer.find(this._selector);
+	_getElements ($container) {
+		const $elements = $container.find(this._selector);
 		if (!$elements.length) {
 			this._log('info', `No import elements with selector "${this._selector}"`);
 		}
