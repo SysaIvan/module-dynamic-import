@@ -22,7 +22,7 @@ class ModuleDynamicImport {
 		/** @private */
 		this._PromiseFn = settings.PromiseFn || null;
 		if (this._PromiseFn === null) {
-			throw new Error('ModuleDynamicImport Error! You must specify "Promise" property!')
+			throw new Error('ModuleDynamicImport Error! You must specify "Promise" property!');
 		}
 
 		/**
@@ -64,7 +64,6 @@ class ModuleDynamicImport {
 	 */
 	importModule (moduleName, $container = $(document)) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
-			console.log(9999);
 			this._log('warn', `module "${moduleName}" is not declared`);
 			return Promise.reject();
 		}
@@ -74,7 +73,7 @@ class ModuleDynamicImport {
 			return Promise.resolve();
 		}
 
-		return this._import(moduleName, $elements);
+		return this._import(moduleName, $elements, $container);
 	}
 
 	/**
@@ -91,7 +90,7 @@ class ModuleDynamicImport {
 		const imports = [];
 		for (let moduleName in this._modules) {
 			if (this._modules.hasOwnProperty(moduleName)) {
-				imports.push(this._import(moduleName, $elements));
+				imports.push(this._import(moduleName, $elements, $container));
 			}
 		}
 
@@ -114,20 +113,24 @@ class ModuleDynamicImport {
 	/**
 	 * @param {string} moduleName
 	 * @param {jQuery} $elements
+	 * @param {jQuery} $container
 	 * @return {Promise}
 	 * @private
 	 */
-	_import (moduleName, $elements) {
+	_import (moduleName, $elements, $container) {
 		/** @type ModuleDynamicImportModules */
 		const module = this._modules[moduleName];
+		if (!module.hasOwnProperty('__moduleName')) {
+			module.__moduleName = moduleName;
+		}
 		if (module && module.moduleFile && module.filterSelector) {
 			const $moduleElements = $elements.filter(module.filterSelector);
 			if (!$moduleElements.length) {
 				return Promise.resolve();
 			}
 
-			if (typeof module.importCondition === 'function') {
-				const result = module.importCondition($moduleElements);
+			if (typeof module.importCondition === 'function' && module.__importConditionAllowed !== true) {
+				const result = module.importCondition($moduleElements, $container);
 				if (result === false) {
 					this._log('info', `module "${moduleName}" skipped by ".importCondition()"`);
 					return Promise.resolve();
@@ -211,7 +214,7 @@ class ModuleDynamicImport {
 	 */
 	_log (type, msg, ...data) {
 		if (this._debug) {
-			console[type](`ModuleDynamicImport ${type}: ${msg}`, ...data)
+			console[type](`ModuleDynamicImport ${type}: ${msg}`, ...data);
 		}
 	}
 
@@ -283,7 +286,7 @@ const singleton = {
 
 };
 
-export { singleton as ModuleDynamicImport }
+export { singleton as ModuleDynamicImport };
 
 // ----------------------------------------
 // Definitions
@@ -302,7 +305,9 @@ export { singleton as ModuleDynamicImport }
 
 /**
  * @typedef {Object} ModuleDynamicImportModules
- * @property {Function} [importCondition]
  * @property {string} moduleFile
  * @property {string} filterSelector
+ * @property {Function} [importCondition]
+ * @property {string} [__moduleName]
+ * @property {boolean} [__importConditionAllowed]
  */
