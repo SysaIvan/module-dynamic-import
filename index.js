@@ -65,7 +65,7 @@ class ModuleDynamicImport {
 	importModule (moduleName, $container = $(document)) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
 			this._log('warn', `module "${moduleName}" is not declared`);
-			return Promise.reject();
+			return this._resolveWithErrors(moduleName);
 		}
 
 		const $elements = this._getElements($container);
@@ -121,8 +121,13 @@ class ModuleDynamicImport {
 		/** @type ModuleDynamicImportModules */
 		const module = this._modules[moduleName];
 		if (!module.hasOwnProperty('__moduleName')) {
-			module.__moduleName = moduleName;
+			Object.defineProperty(module, '__moduleName', {
+				value: moduleName,
+				writable: false,
+				configurable: false
+			});
 		}
+
 		if (module && module.moduleFile && module.filterSelector) {
 			const $moduleElements = $elements.filter(module.filterSelector);
 			if (!$moduleElements.length) {
@@ -137,6 +142,7 @@ class ModuleDynamicImport {
 				}
 			}
 
+			module.__importConditionAllowed = true;
 			this._log('info', `module "${moduleName}" pending`);
 			this._markAsPending($moduleElements);
 			return this._PromiseFn(module.moduleFile)
