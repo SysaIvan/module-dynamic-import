@@ -14,10 +14,9 @@ import $ from 'jquery';
 // Private
 // ----------------------------------------
 
-class ModuleDynamicImport {
-	/**
-	 * @param {ModuleDynamicImportSettings} settings
-	 */
+let instance = null;
+
+export class ModuleDynamicImport {
 	constructor (settings) {
 		/** @private */
 		this._PromiseFn = settings.PromiseFn || null;
@@ -57,11 +56,6 @@ class ModuleDynamicImport {
 		this._debug = settings.debug || false;
 	}
 
-	/**
-	 * @param {string} moduleName
-	 * @param {jQuery} [$container=$(document)]
-	 * @return {Promise}
-	 */
 	importModule (moduleName, $container = $(document)) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
 			this._log('warn', `module "${moduleName}" is not declared`);
@@ -76,11 +70,6 @@ class ModuleDynamicImport {
 		return this._import(moduleName, $elements, $container);
 	}
 
-	/**
-	 * @param {jQuery} [$container=$(document)]
-	 * @param {boolean} [awaitAll=true]
-	 * @return {Promise}
-	 */
 	importAll ($container = $(document), awaitAll = true) {
 		const $elements = this._getElements($container);
 		if (!$elements.length) {
@@ -99,6 +88,36 @@ class ModuleDynamicImport {
 		}
 		return Promise.resolve();
 	}
+
+	static get eventPendingName () {
+		return 'moduleDynamicImportPending';
+	}
+
+	static get eventLoadedName () {
+		return 'moduleDynamicImportLoaded';
+	}
+
+	static get eventExecutedName () {
+		return 'moduleDynamicImportExecuted';
+	}
+
+	static instance () {
+		if (instance === null) {
+			singleton.create();
+		}
+		return instance;
+	}
+
+	static create (settings = {}) {
+		if (instance instanceof ModuleDynamicImport) {
+			instance._log('warn', 'ModuleDynamicImport is already created');
+			return instance;
+		}
+		instance = new ModuleDynamicImport(settings);
+		return instance;
+	}
+
+	// ----
 
 	/**
 	 * @param {string} moduleName
@@ -223,97 +242,4 @@ class ModuleDynamicImport {
 			console[type](`ModuleDynamicImport ${type}: ${msg}`, ...data);
 		}
 	}
-
-	/**
-	 * @type {string}
-	 */
-	static get eventPendingName () {
-		return 'moduleDynamicImportPending';
-	}
-
-	/**
-	 * @type {string}
-	 */
-	static get eventLoadedName () {
-		return 'moduleDynamicImportLoaded';
-	}
-
-	/**
-	 * @type {string}
-	 */
-	static get eventExecutedName () {
-		return 'moduleDynamicImportExecuted';
-	}
 }
-
-// ----------------------------------------
-// Public
-// ----------------------------------------
-
-let instance = null;
-const singleton = {
-	/**
-	 * @return {ModuleDynamicImport}
-	 */
-	instance () {
-		if (instance === null) {
-			singleton.create();
-		}
-		return instance;
-	},
-
-	/**
-	 * @param {ModuleDynamicImportSettings} [settings]
-	 * @return {ModuleDynamicImport}
-	 */
-	create (settings = {}) {
-		if (instance instanceof ModuleDynamicImport) {
-			instance._log('warn', 'ModuleDynamicImport is already created');
-			return instance;
-		}
-		instance = new ModuleDynamicImport(settings);
-		return instance;
-	},
-
-	/**
-	 * @enum {string}
-	 */
-	events: {
-		get pending () {
-			return ModuleDynamicImport.eventPendingName;
-		},
-		get loaded () {
-			return ModuleDynamicImport.eventLoadedName;
-		},
-		get executed () {
-			return ModuleDynamicImport.eventExecutedName;
-		}
-	}
-
-};
-
-export { singleton as ModuleDynamicImport };
-
-// ----------------------------------------
-// Definitions
-// ----------------------------------------
-
-/**
- * @typedef {Object} ModuleDynamicImportSettings
- * @property {Function|Promise} [PromiseFn]
- * @property {string} [selector='.js-import']
- * @property {Object} [modules={}]
- * @property {string} [pendingCssClass='_import-pending']
- * @property {string} [loadedCssClass='_import-loaded']
- * @property {string} [executedCssClass='_import-executed']
- * @property {boolean} [debug=false]
- */
-
-/**
- * @typedef {Object} ModuleDynamicImportModules
- * @property {string} moduleFile
- * @property {string} filterSelector
- * @property {Function} [importCondition]
- * @property {string} [__moduleName]
- * @property {boolean} [__importConditionAllowed]
- */
