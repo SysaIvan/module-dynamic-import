@@ -56,7 +56,7 @@ export class ModuleDynamicImport {
 		this._debug = settings.debug || false;
 	}
 
-	importModule (moduleName, $container = $(document)) {
+	importModule (moduleName, $container = $('body')) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
 			this._log('warn', `module "${moduleName}" is not declared`);
 			return this._resolveWithErrors(moduleName);
@@ -70,7 +70,7 @@ export class ModuleDynamicImport {
 		return this._import(moduleName, $elements, $container);
 	}
 
-	importAll ($container = $(document), awaitAll = true) {
+	importAll ($container = $('body'), awaitAll = true) {
 		const $elements = this._getElements($container);
 		if (!$elements.length) {
 			return Promise.resolve();

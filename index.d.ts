@@ -1,12 +1,12 @@
 declare module 'module-dynamic-import' {
 	export interface IModuleDynamicImportSettings {
-		PromiseFn?(moduleFileName: string): Promise<any>;
-		selector?: JQuery.Selector;
-		modules?: { [p: string]: IModuleDynamicImportModules };
-		pendingCssClass?: string;
-		loadedCssClass?: string;
-		executedCssClass?: string;
-		debug?: boolean;
+		PromiseFn(moduleFileName: string): Promise<any>;
+		selector: JQuery.Selector;
+		modules: { [p: string]: IModuleDynamicImportModules };
+		pendingCssClass: string;
+		loadedCssClass: string;
+		executedCssClass: string;
+		debug: boolean;
 	}
 
 	export interface IModuleDynamicImportEvents {
@@ -36,9 +36,9 @@ declare module 'module-dynamic-import' {
 	}
 
 	export class ModuleDynamicImport {
-		importModule(moduleName: string, $container: JQuery): Promise<any>;
-		importAll($container: JQuery, awaitAll: boolean): Promise<any>;
-		static create(settings: IModuleDynamicImportSettings): ModuleDynamicImport;
+		importModule(moduleName: string, $container?: JQuery = $('body')): Promise<any>;
+		importAll($container?: JQuery = $('body'), awaitAll?: boolean = true): Promise<any>;
+		static create(settings: Partial<IModuleDynamicImportSettings>): ModuleDynamicImport;
 		static instance(): ModuleDynamicImport;
 		static get eventPendingName(): string;
 		static get eventLoadedName(): string;
