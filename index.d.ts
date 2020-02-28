@@ -36,8 +36,8 @@ declare module 'module-dynamic-import' {
 	}
 
 	export class ModuleDynamicImport {
-		importModule(moduleName: string, $container?: JQuery = $('body')): Promise<any>;
-		importAll($container?: JQuery = $('body'), awaitAll?: boolean = true): Promise<any>;
+		importModule(moduleName: string, $container?: JQuery = $('body'), force?: boolean = false): Promise<any>;
+		importAll($container?: JQuery = $('body'), awaitAll?: boolean = true, force?: boolean = false): Promise<any>;
 		static create(settings: Partial<IModuleDynamicImportSettings>): ModuleDynamicImport;
 		static instance(): ModuleDynamicImport;
 		static get eventPendingName(): string;

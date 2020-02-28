@@ -56,7 +56,7 @@ export class ModuleDynamicImport {
 		this._debug = settings.debug || false;
 	}
 
-	importModule (moduleName, $container = $('body')) {
+	importModule (moduleName, $container = $('body'), force = false) {
 		if (!this._modules.hasOwnProperty(moduleName)) {
 			this._log('warn', `module "${moduleName}" is not declared`);
 			return this._resolveWithErrors(moduleName);
@@ -67,10 +67,10 @@ export class ModuleDynamicImport {
 			return Promise.resolve();
 		}
 
-		return this._import(moduleName, $elements, $container);
+		return this._import(moduleName, $elements, $container, force);
 	}
 
-	importAll ($container = $('body'), awaitAll = true) {
+	importAll ($container = $('body'), awaitAll = true, force = false) {
 		const $elements = this._getElements($container);
 		if (!$elements.length) {
 			return Promise.resolve();
@@ -79,7 +79,7 @@ export class ModuleDynamicImport {
 		const imports = [];
 		for (let moduleName in this._modules) {
 			if (this._modules.hasOwnProperty(moduleName)) {
-				imports.push(this._import(moduleName, $elements, $container));
+				imports.push(this._import(moduleName, $elements, $container, force));
 			}
 		}
 
@@ -133,10 +133,11 @@ export class ModuleDynamicImport {
 	 * @param {string} moduleName
 	 * @param {jQuery} $elements
 	 * @param {jQuery} $container
+	 * @param {boolean} [force]
 	 * @return {Promise}
 	 * @private
 	 */
-	_import (moduleName, $elements, $container) {
+	_import (moduleName, $elements, $container, force = false) {
 		/** @type ModuleDynamicImportModules */
 		const module = this._modules[moduleName];
 		if (!module.hasOwnProperty('__moduleName')) {
@@ -153,7 +154,7 @@ export class ModuleDynamicImport {
 				return Promise.resolve();
 			}
 
-			if (typeof module.importCondition === 'function' && module.__importConditionAllowed !== true) {
+			if (force !== true && typeof module.importCondition === 'function' && module.__importConditionAllowed !== true) {
 				const result = module.importCondition($moduleElements, $container);
 				if (result === false) {
 					this._log('info', `module "${moduleName}" skipped by ".importCondition()"`);
